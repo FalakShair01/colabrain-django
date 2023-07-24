@@ -2,15 +2,12 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework.views import APIView
-from rest_framework.generics import RetrieveAPIView, UpdateAPIView
+from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import CompanySerializer, CompanyProfileSerializer, ChangePasswordSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Company
-
-
-# Create your views here.
 
 
 class RegisterCompany(APIView):
@@ -23,27 +20,18 @@ class RegisterCompany(APIView):
         return Response(serializer.errors, status=status.HTTP_201_CREATED)
     
 
-# class ChangePasswordView(APIView):
-#     def get(self, request):
-#         serializer = ChangePasswordSerializer(data=request.data)
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data, context={'user': request.user})
+        serializer.is_valid(raise_exception=True)
+        return Response({"message": "Password successfully changed."}, status=200)
 
 
+class CompanyProfileView(RetrieveUpdateAPIView):
+    serializer_class = CompanyProfileSerializer
+    permission_classes = [IsAuthenticated]
 
-# class CompanyProfileRetrieveView(RetrieveAPIView):
-#     queryset = Company.objects.all()
-#     serializer_class = CompanyProfileSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get_object(self):
-#         return self.request.user.company
-
-# class CompanyProfileUpdateView(UpdateAPIView):
-#     queryset = Company.objects.all()
-#     serializer_class = CompanyProfileSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get_object(self):
-#         return self.request.user.company
-    
-#     def perform_update(self, serializer):
-#         serializer.save(user=self.request.user.company.user, partial=True)
+    def get_object(self):
+        return self.request.user.company

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Company
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth import get_user_model
 
 
@@ -44,29 +45,62 @@ class CompanySerializer(serializers.ModelSerializer):
         return company
 
 
-# class ChangePasswordSerializer(serializers.ModelSerializer):
-#     password = serializers.CharField(write_only=True)
-#     confirm_password = serializers.CharField(write_only=True)
-#     class Meta:
-#         model = User
-#         fields = ['email', 'username', 'password', 'confirm_password']
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True, required=True)
+    new_password = serializers.CharField(write_only=True, required=True)
+    confirm_password = serializers.CharField(write_only=True, required=True)
+
+    def validate(self, data):
+        old_password = data.get('old_password')
+        new_password = data.get('new_password')
+        confirm_password = data.get('confirm_password')
+
+        # Check if the new password and confirm new password match
+        if new_password != confirm_password:
+            raise serializers.ValidationError("New passwords and Comfirm Password do not match.")
+
+        # Get the user from the request context
+        user = self.context.get('user')
+
+        # Check if the old password matches the password in the database
+        if not check_password(old_password, user.password):
+            raise serializers.ValidationError("Invalid old password.")
+        
+        #update the user's password
+        user.set_password(new_password)
+        user.save()
+
+        return data
 
 
 
+class UserEmailValidatorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'username']
+        extra_kwargs = {'email': {'validators': []}}  # Exclude email from unique constraint check
 
 
-# class CompanyProfileSerializer(serializers.ModelSerializer):
-#     user = UserSerializer()
+class CompanyProfileSerializer(serializers.ModelSerializer):
+    user = UserEmailValidatorSerializer()
 
-#     class Meta:
-#         model = Company
-#         fields = ['user', 'company_name', 'phone', 'profile_pic', 'role']
+    class Meta:
+        model = Company
+        fields = ['user' , 'company_name', 'country', 'phone', 'role','profile_pic']
+    
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user')
+        instance.company_name = validated_data.get('company_name', instance.company_name)
+        instance.country = validated_data.get('country', instance.country)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.role = validated_data.get('role', instance.role)
 
-#     def update(self, instance, validated_data):
-#         instance.company_name = validated_data.get('company_name', instance.company_name)
-#         user_data = validated_data.get('user')
-#         user_serializer = UserSerializer(instance.user, data=user_data, partial=True)
-#         if user_serializer.is_valid():
-#             user_serializer.save()
-#         instance.save()
-#         return instance
+        # Update user fields individually without triggering the unique constraint check on email
+        user = instance.user
+        user.email = user_data.get('email', user.email)
+        user.username = user_data.get('username', user.username)
+        user.save()
+
+        instance.save()
+        return instance
+    
