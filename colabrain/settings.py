@@ -40,14 +40,17 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
+    "corsheaders",
     "rest_framework",
     'rest_framework_simplejwt',
-    "organization"
+    "organization",
+    "conversation",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    'corsheaders.middleware.CorsMiddleware', # CORS
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -177,3 +180,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 AUTH_USER_MODEL = "organization.User"
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://www.colabrain.com',
+    'http://colabrain.com',
+    'https://www.colabrain.com',
+    'https://colabrain.com',
+]
