@@ -7,3 +7,5 @@ db.sqlite3
 media
 venv/
 migrations
+conversation/__pycache__/
+conversation/migrations/
