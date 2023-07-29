@@ -2,6 +2,10 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 
+def upload_to(instance, filename):
+    return 'images/{filename}'.format(filename=filename)
+
+
 class UserManager(BaseUserManager):
     def create_user(self, email, username, password=None):
         """
@@ -72,7 +76,7 @@ class Company(models.Model):
     company_name = models.CharField(max_length=255) 
     phone = models.CharField(max_length=255,null=True, blank=True)
     country = models.CharField(max_length=255,null=True, blank=True)
-    profile_pic = models.ImageField(blank=True,null=True, upload_to='profile_images/organization/')
+    profile_pic = models.ImageField(upload_to=upload_to, blank=True,null=True)
     role = models.CharField(max_length=255,default='organization', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -86,7 +90,7 @@ class Employee(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     phone = models.CharField(max_length=255)
     country = models.CharField(max_length=255,null=True, blank=True)
-    profile_pic = models.ImageField(blank=True,null=True, upload_to='profile_images/employees/')
+    profile_pic = models.ImageField(blank=True,null=True, upload_to=upload_to)
     date_of_birth = models.DateField(null=True, blank=True)
 
     role = models.CharField(max_length=255,default='employee', null=True, blank=True)

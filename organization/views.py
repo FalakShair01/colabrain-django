@@ -8,10 +8,14 @@ from rest_framework import status
 from .serializers import CompanySerializer, CompanyProfileSerializer, ChangePasswordSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Company
+from rest_framework.parsers import MultiPartParser, FormParser
+
 
 
 class RegisterCompany(APIView):
     permission_classes = [AllowAny]
+    parser_classes = (MultiPartParser, FormParser)
+
     def post(self, request):
         serializer = CompanySerializer(data=request.data)
         if serializer.is_valid():
@@ -32,6 +36,8 @@ class ChangePasswordView(APIView):
 class CompanyProfileView(RetrieveUpdateAPIView):
     serializer_class = CompanyProfileSerializer
     permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
+
 
     def get_object(self):
         return self.request.user.company

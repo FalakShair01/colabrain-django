@@ -1,11 +1,12 @@
 # urls.py
 from django.urls import path
-from .views import CreateNewChatView, ListAllChatView, DeleteAllChatsView, AddMessage, DeleteSingleChatView
+from .views import CreateNewChatView, ListAllChatView, DeleteAllChatsView, AddMessage,DeleteSingleChatView, SingleChatView
 
 urlpatterns = [
-    path('chats/create_new/', CreateNewChatView.as_view(), name='create-new-chat'), # done
-    path('chats/all/', ListAllChatView.as_view(), name='list-all-chat'), # done
-    path('chats/delete_all/', DeleteAllChatsView.as_view(), name='delete-all-chats'), # done
-    path('chats/delete/<int:chat_id>/', DeleteSingleChatView.as_view(), name='delete-single-chat'), # done
+    path('chats/create_new/', CreateNewChatView.as_view(), name='create-new-chat'), 
+    path('chats/all/', ListAllChatView.as_view(), name='list-all-chat'), 
+    path('chats/<int:pk>/', SingleChatView.as_view(), name='get-single-chat'), 
+    path('chats/delete_all/', DeleteAllChatsView.as_view(), name='delete-all-chats'), 
+    path('chats/delete/<int:chat_id>/', DeleteSingleChatView.as_view(), name='delete-single-chat'), 
     path('chats/add_message/', AddMessage.as_view(), name='add-message'),
 ]

@@ -83,6 +83,7 @@ class UserEmailValidatorSerializer(serializers.ModelSerializer):
 
 class CompanyProfileSerializer(serializers.ModelSerializer):
     user = UserEmailValidatorSerializer()
+    profile_pic = serializers.ImageField(required=False)
 
     class Meta:
         model = Company
@@ -94,6 +95,7 @@ class CompanyProfileSerializer(serializers.ModelSerializer):
         instance.country = validated_data.get('country', instance.country)
         instance.phone = validated_data.get('phone', instance.phone)
         instance.role = validated_data.get('role', instance.role)
+        instance.profile_pic = validated_data.get('profile_pic', instance.profile_pic)
 
         # Update user fields individually without triggering the unique constraint check on email
         user = instance.user

@@ -38,6 +38,19 @@ class ListAllChatView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class SingleChatView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        id = self.kwargs['pk']
+        try:
+            chat = Chat.objects.get(id=id)
+        except Chat.DoesNotExist:
+            return Response({"Error": "Chat with ID Not Found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ChatReadSerializer(chat)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class DeleteAllChatsView(APIView):    
     def delete(self, request, *args, **kwargs):
         chats = Chat.objects.filter(user=request.user)
@@ -46,6 +59,8 @@ class DeleteAllChatsView(APIView):
     
 
 class DeleteSingleChatView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def delete(self,request, *args, **kwargs):
         chat_id = kwargs['chat_id']
         try: 
