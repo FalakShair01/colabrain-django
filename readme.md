@@ -186,6 +186,12 @@ Make sure to replace `<your_access_token>` with the actual access token obtained
 - Method: GET
 - Request Body JSON: Not applicable (GET request)
 
+#### Retrieve Single Chat
+
+- Endpoint: `GET /api/chats/1/`
+- Method: GET
+- Request Body JSON: Not applicable (GET request)
+
 #### Delete All Chats
 
 - Endpoint: `DELETE /api/chats/delete_all/`
