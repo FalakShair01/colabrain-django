@@ -78,8 +78,8 @@ The deployment server is running at `http://falak.pythonanywhere.com/
 - Body:
   ```json
   {
-    "email": "falak@gmail.com",
-    "password": "123"
+    "email": "<your_email>",
+    "password": "<your_password>"
   }
   ```
 - Response: On successful login, you will receive both an access token and a refresh token.
@@ -104,9 +104,9 @@ The deployment server is running at `http://falak.pythonanywhere.com/
   ```json
   {
     "user": {
-      "username": "falak",
-      "email": "falak@gmail.com",
-      "password": "123"
+      "username": "<your_name>",
+      "email": "<your_email>",
+      "password": "<your_password>"
     },
     "company_name": "colabrain",
     "phone": "12345"
