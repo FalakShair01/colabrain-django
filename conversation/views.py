@@ -11,13 +11,19 @@ class CreateNewChatView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+        req = request.data.get('req', None),
+        res =  request.data.get('res', None),
         message_data = {
-            'req': request.data.get('req', None),
-            'res': 'This is chatbot response',
+            'req': req,
+            'res': res,
         }
+        words = res.split()
+
+        # Take the first three words
+        first_three_words = ' '.join(words[:3])
 
         data = {
-            'title': 'AI Title',
+            'title': first_three_words,
             'user': request.user.id,
             'messages': [message_data]
         }
@@ -81,10 +87,11 @@ class AddMessage(APIView):
             return Response({'Message': 'Chat does not exist'}, status=status.HTTP_404_NOT_FOUND)
         
         req = request.data.get('req', None)
+        res = request.data.get('req', None)
         data = {
             'chat' : chat_id,
             'req': req,
-            'res': 'This is chatbot response',
+            'res': res,
         }
         serializer = AddMessageSerializer(data=data)
         serializer.is_valid(raise_exception=True)

@@ -193,4 +193,5 @@ CORS_ALLOWED_ORIGINS = [
     'http://colabrain.com',
     'https://www.colabrain.com',
     'https://colabrain.com',
+    'https://colabrain.vercel.app'
 ]
