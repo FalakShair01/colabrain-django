@@ -11,7 +11,6 @@ from .models import Company
 from rest_framework.parsers import MultiPartParser, FormParser
 
 
-
 class RegisterCompany(APIView):
     permission_classes = [AllowAny]
     parser_classes = (MultiPartParser, FormParser)

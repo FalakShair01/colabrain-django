@@ -11,19 +11,19 @@ class CreateNewChatView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        req = request.data.get('req', None),
-        res =  request.data.get('res', None),
+        
         message_data = {
-            'req': req,
-            'res': res,
+            'req': request.data.get('req', None),
+            'res': request.data.get('res', None)
         }
-        words = res.split()
+        print(message_data)
+        words = message_data['res'].split()
 
-        # Take the first three words
+        # # Take the first three words
         first_three_words = ' '.join(words[:3])
 
         data = {
-            'title': first_three_words,
+            'title': f'{first_three_words} ...',
             'user': request.user.id,
             'messages': [message_data]
         }
