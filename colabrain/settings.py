@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
+# from decouple import config
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -46,6 +47,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     'rest_framework_simplejwt',
+    'users',
+    'chat',
     "organization",
     "conversation",
 ]
@@ -185,7 +188,7 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-AUTH_USER_MODEL = "organization.User"
+AUTH_USER_MODEL = "users.User"
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
@@ -195,3 +198,13 @@ CORS_ALLOWED_ORIGINS = [
     'https://colabrain.com',
     'https://colabrain.vercel.app'
 ]
+
+
+#EMAIL
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+# EMAIL_USE_TLS = True
+# EMAIL_PORT = 587
