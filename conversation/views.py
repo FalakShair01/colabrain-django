@@ -1,9 +1,9 @@
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Chat, Message
-from .serializers import MessageSerializer, ChatReadSerializer, ChatCreateSerializer, AddMessageSerializer
+from .serializers import MessageSerializer, ChatReadSerializer, ChatCreateSerializer, AddMessageSerializer, ChatSerializer
 from rest_framework.views import APIView
 
 
@@ -98,3 +98,23 @@ class AddMessage(APIView):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
+
+
+
+class ChatViewset(viewsets.ModelViewSet):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        return serializer.save(user=self.request.user)
+    
+    def get_queryset(self):
+        return Chat.objects.filter(user=self.request.user)
+
+    
+    
+class MessageViewset(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+    permission_classes = [IsAuthenticated]

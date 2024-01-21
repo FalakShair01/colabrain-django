@@ -40,3 +40,19 @@ class AddMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ['id', 'req', 'res', 'created_at', 'chat']
+
+
+class ChatSerializer(serializers.ModelSerializer):
+    messages = MessageSerializer(many=True)
+    class Meta:
+        model = Chat
+        fields = ['id', 'title', 'messages']
+
+    def create(self, validated_data):
+        messages = validated_data.pop('messages')
+        req_data = messages[0]['req'].split()
+        first_three_words = ' '.join(req_data[:3])
+        chat = Chat.objects.create(title=first_three_words)
+        for message in messages:
+            Message.objects.create(chat=chat, **message)
+        return chat

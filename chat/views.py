@@ -11,6 +11,7 @@ class ChatViewset(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
+        # print(f"User is {self.request.user}")
         return serializer.save(user=self.request.user)
     
     def get_queryset(self):
