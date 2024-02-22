@@ -20,30 +20,71 @@ from .serializers import (UserSerializer, ProfileSerializer, ChangePasswordSeria
 from .token_utils import get_tokens_for_user
 from .permissions import IsAdminOrSelf
 
-
 class UserViewset(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     # permission_classes = [IsAdminOrSelf]
-    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return User.objects.exclude(id=self.request.user.id)
     
-    # def create(self, request, *args, **kwargs):
-    #     # Generate a random password for the user
-    #     generated_password = User.objects.make_random_password()
+    def create(self, request, *args, **kwargs):
+        # Generate a random password for the user
+        generated_password = User.objects.make_random_password()
 
-    #     # Set the generated password in the request data
-    #     request.data['password'] = generated_password
+        # Set the generated password in the request data
+        request.data['password'] = generated_password
 
-    #     # Use the serializer to create the user
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     self.perform_create(serializer)
+        # Use the serializer to create the user
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try: 
+            email_body = f"""
+                <p>Welcome to Fastighetsvn!</p>
+                <p>Your account has been successfully created. Here are your login credentials:</p>
+                <ul>
+                    <li><strong>Email:</strong> {request.data['email']}</li>
+                    <li><strong>Password:</strong> {generated_password}</li>
+                </ul>
+                <p>Website: <a href="https://fastighetsvyn.se/">https://fastighetsvyn.se/</a></p>
+            """
 
-    #     headers = self.get_success_headers(serializer.data)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+            data = {
+                "subject": "Account Registration",
+                "body": email_body,
+                "to": request.data['email']
+            }
+            Utils.send_email(data=data)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+        except Exception as e:
+            return Response({"Message": "Registration Fail Please try again later", "Error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# class UserViewset(viewsets.ModelViewSet):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
+#     # permission_classes = [IsAdminOrSelf]
+#     # permission_classes = [IsAuthenticated]
+
+#     def get_queryset(self):
+#         return User.objects.exclude(id=self.request.user.id)
+    
+#     # def create(self, request, *args, **kwargs):
+#     #     # Generate a random password for the user
+#     #     generated_password = User.objects.make_random_password()
+
+#     #     # Set the generated password in the request data
+#     #     request.data['password'] = generated_password
+
+#     #     # Use the serializer to create the user
+#     #     serializer = self.get_serializer(data=request.data)
+#     #     serializer.is_valid(raise_exception=True)
+#     #     self.perform_create(serializer)
+
+#     #     headers = self.get_success_headers(serializer.data)
+#     #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class LoginView(APIView):
