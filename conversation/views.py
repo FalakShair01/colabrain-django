@@ -16,7 +16,6 @@ class CreateNewChatView(APIView):
             'req': request.data.get('req', None),
             'res': request.data.get('res', None)
         }
-        print(message_data)
         words = message_data['res'].split()
 
         # # Take the first three words
@@ -87,7 +86,7 @@ class AddMessage(APIView):
             return Response({'Message': 'Chat does not exist'}, status=status.HTTP_404_NOT_FOUND)
         
         req = request.data.get('req', None)
-        res = request.data.get('req', None)
+        res = request.data.get('res', None)
         data = {
             'chat' : chat_id,
             'req': req,

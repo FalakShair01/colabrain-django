@@ -73,7 +73,7 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
             user = User.objects.get(email=email)
             uid = urlsafe_base64_encode(force_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
-            frontend_domain = settings.FRONTEND_DOMAIN
+            # frontend_domain = settings.FRONTEND_DOMAIN
             # url = reverse('reset-password')
             link = "https://colabrain.vercel.app" + reverse('reset-password', args=[uid, token])
             # link = 'http://'+domain+'/api/user/reset-password/'+uid+'/'+token
