@@ -119,6 +119,7 @@ class ResetPasswordSerializer(serializers.Serializer):
                 "Password and Confrim Password doesn't match.")
 
         id = urlsafe_base64_decode(smart_str(uid))
+        print(id)
         user = User.objects.get(id=id)
         if not PasswordResetTokenGenerator().check_token(user, token):
             raise serializers.ValidationError("Invalid Token")
