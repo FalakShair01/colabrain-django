@@ -148,6 +148,7 @@ class ChangePasswordView(APIView):
 
 
 class SendPasswordResetEmailView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = SendPasswordResetEmailSerializer(
             data=request.data, context={'request': request})
@@ -156,6 +157,7 @@ class SendPasswordResetEmailView(APIView):
 
 
 class ResetPasswordView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request, uid, token):
         serializer = ResetPasswordSerializer(data=request.data, context={
                                              'uid': uid, 'token': token})
