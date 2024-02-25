@@ -23,7 +23,7 @@ from .permissions import IsAdminOrSelf
 class UserViewset(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    # permission_classes = [IsAdminOrSelf]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         return User.objects.exclude(id=self.request.user.id)
@@ -34,19 +34,20 @@ class UserViewset(viewsets.ModelViewSet):
 
         # Set the generated password in the request data
         request.data['password'] = generated_password
+        print(generated_password)
 
         # Use the serializer to create the user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         try: 
             email_body = f"""
-                <p>Welcome to Fastighetsvn!</p>
+                <p>Welcome to Colabrain!</p>
                 <p>Your account has been successfully created. Here are your login credentials:</p>
                 <ul>
                     <li><strong>Email:</strong> {request.data['email']}</li>
                     <li><strong>Password:</strong> {generated_password}</li>
                 </ul>
-                <p>Website: <a href="https://fastighetsvyn.se/">https://fastighetsvyn.se/</a></p>
+                <p>Website: <a href="https://colabrain.vercel.app/login">https://colabrain.vercel.app/login</a></p>
             """
 
             data = {
@@ -104,11 +105,11 @@ class LoginView(APIView):
                     serializer = UserSerializer(user)
                     return Response({'user':serializer.data,'token': token,"Message":"Login Successfull"}, status=status.HTTP_200_OK)
                 else:
-                    return Response({"Message": "Please check your email to verify."})
+                    return Response({"Message": "Please check your email to verify."}, status=status.HTTP_403_FORBIDDEN)
             else:
-                return Response({"Message": "User is not active. Please Contact to Support team."})
+                return Response({"Message": "User is not active. Please Contact to Support team."}, status=status.HTTP_403_FORBIDDEN)
         else:
-            return Response({"Message":"Email and Password is not valid"})
+            return Response({"Message":"Email and Password is not valid"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class ProfileView(generics.RetrieveUpdateAPIView):
