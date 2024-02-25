@@ -12,6 +12,6 @@ urlpatterns = [
     path("user/remove-profile/", RemoveUserProfile.as_view(), name="remove-profile"),
     path("user/change-password/", ChangePasswordView.as_view(), name="change-password"),
     path("user/reset-password-email/", SendPasswordResetEmailView.as_view(), name="reset-password-email"),
-    path("user/reset-password/<uid>/<token>", ResetPasswordView.as_view(), name="reset-password"),
+    path(r"user/reset-password/<uid>/<token>/", ResetPasswordView.as_view(), name="reset-password"),
     path('', include(router.urls)),
 ]
